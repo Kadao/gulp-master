@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="css/custom.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/weather-icons.min.css">
+	<title>Weather Forecasting</title>
+</head>
+<body>
+	<style type="text/css">
+		.condition {text-transform: capitalize;}
+	</style>
+
+	<!-- Parent Div Begins -->
+	<!-- If weather is true then vue will work is what v-if does -->
+	<div class="parent" id="app" v-if="weather">
+
+		<!-- Weather UI HTML -->
+		<div class="weather-widget">
+		  <div class="weather-icon row">
+		    <i class="wi wi-day-sunny" id="icon1"></i>
+		  </div>
+		  <h1 class="temp-c row">{{weather.data.daily[0].temp.day.toFixed(0) + '°C'}}</h1>
+		  <h5 class="condition row">{{weather.data.daily[0].weather[0].description}}</h5>
+		  <h3 id="place" class="location-name row">Wellington</h3>
+		  <h5 class="location-country row">New Zealand</h5>
+		  <h6 class="daily-date row">{{createDates()[0]}}</h6>
+		</div>
+		<div class="weather-forecast">
+
+		  <div class="forecast-item">
+		    <div class="day">
+		      <h4>Tomorrow</h4>
+		      <h6>{{createDates()[1]}}</h6>
+		    </div>
+		    <div class="forecast">
+		      <i class="wi wi-night-sleet"></i> {{weather.data.daily[1].temp.day.toFixed(0) + '°C'}}
+		      <h6 class="condition">{{weather.data.daily[1].weather[0].description}}</h6>
+		    </div>
+		  </div>
+
+		  <div class="forecast-item">
+		    <div class="day">
+		      <h4>Monday</h4>
+		      <h6>{{createDates()[2]}}</h6>
+		    </div>
+		    <div class="forecast">
+		      <i class="wi wi-night-sleet"></i> {{weather.data.daily[2].temp.day.toFixed(0) + '°C'}}
+		      <h6 class="condition">{{weather.data.daily[2].weather[0].description}}</h6>
+		    </div>
+		  </div>
+
+		  <div class="forecast-item">
+		    <div class="day">
+		      <h4>Tuesday</h4>
+		      <h6>{{createDates()[3]}}</h6>
+		    </div>
+		    <div class="forecast">
+		      <i class="wi wi-day-thunderstorm"></i> {{weather.data.daily[3].temp.day.toFixed(0) + '°C'}}
+		      <h6 class="condition">{{weather.data.daily[3].weather[0].description}}</h6>
+		    </div>
+		  </div>
+
+		  <div class="forecast-item">
+		    <div class="day">
+		      <h4>Wednesday</h4>
+		      <h6>{{createDates()[4]}}</h6>
+		    </div>
+		    <div class="forecast">
+		      <i class="wi wi-day-sunny"></i> {{weather.data.daily[4].temp.day.toFixed(0) + '°C'}}
+		      <h6 class="condition">{{weather.data.daily[4].weather[0].description}}</h6>
+		    </div>
+		  </div>
+
+		  <div class="forecast-item">
+		    <div class="day">
+		      <h4>Thursday</h4>
+		      <h6>{{createDates()[5]}}</h6>
+		    </div>
+		    <div class="forecast">
+		      <i class="wi wi-night-sleet"></i> {{weather.data.daily[5].temp.day.toFixed(0) + '°C'}}
+		      <h6 class="condition">{{weather.data.daily[5].weather[0].description}}</h6>
+		    </div>
+		  </div>
+
+		  <div class="forecast-item">
+		    <div class="day">
+		      <h4>Friday</h4>
+		      <h6>{{createDates()[6]}}</h6>
+		    </div>
+		    <div class="forecast">
+		      <i class="wi wi-night-sleet"></i> {{weather.data.daily[6].temp.day.toFixed(0) + '°C'}}
+		      <h6 class="condition">{{weather.data.daily[6].weather[0].description}}</h6>
+		    </div>
+		  </div>
+
+		  <div class="forecast-item">
+		    <div class="day">
+		      <h4>Saturday</h4>
+		      <h6>{{createDates()[7]}}</h6>
+		    </div>
+		    <div class="forecast">
+		      <i class="wi wi-night-sleet"></i> {{weather.data.daily[7].temp.day.toFixed(0) + '°C'}}
+		      <h6 class="condition">{{weather.data.daily[7].weather[0].description}}</h6>
+		    </div>
+		  </div>
+
+		</div>
+	<!-- WeatherUI HTML ENDS -->
+  </div>
+	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+
+	<script>
+	(function(){
+	
+		var app = new Vue({
+			el: '#app',
+			data: {
+				weather: false
+		  }, methods: {
+			createDates: function  () {
+					var dates = [];
+					var daysRequired = 8
+					for (var i = 1; i <= daysRequired; i++) {
+					  dates.push( moment().add(i, 'days').format('dddd, Do MMMM YYYY') )
+					}
+					console.log(dates)
+
+					return dates
+				}
+		  }
+		});
+
+		makeAjaxRequest();
+
+		 function makeAjaxRequest () {
+		    axios({
+		      method: 'get',
+		      url: 'https://api.openweathermap.org/data/2.5/onecall?lat=-41.282626&lon=-174.773390&units=metric&exclude=hourly,minute&appid=4085104e7cbf09c8e766dd1d8ed63d2f'
+		    }).then(function (response) {
+		      app.weather = response
+			  getStarted()
+		    });
+		  }
+
+		  function getStarted () {
+			  console.log(app.weather)
+		  }
+
+			function weatherCheck (data) {
+				console.log(data);
+
+				if(data.daily[0].weather[0].description.includes('sun')) {
+					alert('rain spotted');
+					$('panelOne')
+				}
+
+			  if(data.daily[0].weather[0].description.includes('sun')) {
+					alert('rain spotted');
+				}
+
+			}
+
+
+	}()); // iffe function ENDS
+	</script>
+</body>
+</html>
